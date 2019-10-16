@@ -1,0 +1,3 @@
+AUTHOR: Zach Chommala
+Lab 6: SQL SCRIPTS
+Collaborators: Jon Phouminh, Wayne Wood

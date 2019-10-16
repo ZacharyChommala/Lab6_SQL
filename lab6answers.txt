@@ -1,0 +1,63 @@
+AUTHOR: Zach Chommala
+Lab 6: SQL SCRIPTS
+Collaborators: Jon Phouminh, Wayne Wood
+
+
+CREATE TABLE IF NOT EXISTS UNI_NAME(
+     id SERIAL PRIMARY KEY,
+     UNI_NAME VARCHAR(40) NOT NULL,
+     DATE_ESTABLISHED Date NOT NULL,
+     ADDRESS VARCHAR(40) NOT NULL,
+     STUDENT_POPULATION INTEGER NOT NULL,
+     ACCEPTANCE_RATE FLOAT NOT NULL);
+
+  COMMAND: SELECT * from <tablename>. displays everything
+
+INSERT INTO UNI_NAME(Uni_name, DATE_ESTABLISHED, Address, STUDENT_POPULATION, ACCEPTANCE_RATE)
+VALUES('CU Boulder', '1876-01-01', '1100 28th St, Boulder, CO 80303', 35000, 80);
+
+
+## Write a script to list the Football Players (name & major), organized by major in college.
+SELECT name, major,* FROM football_players;
+
+##Write a script to list all of the Football Players (name & rushing yards) who have 70 or more rushing yards.
+SELECT * FROM football_players where rushing_yards > 70;
+
+##Write a script to list all of the games played against Nebraska (show all game information).
+SELECT * FROM football_games where visitor_name = 'Nebraska';
+
+## Write a script to list all of the games CU Boulder has won.
+SELECT * FROM football_games where home_score > visitor_score;
+
+## Write a script to list all of the games played in the Fall 2018 Season (show team name & game date).
+SELECT visitor_name, game_date from football_games WHERE extract(month from game_date) >8;
+
+## Write a script to list all of the games played in the Fall 2018 Season (show team name & game date).
+SELECT * FROM football_games where game_date =
+
+## Write a script to list the average number of points CU has scored in past games.
+SELECT avg(home_score) FROM football_games;
+
+## Write a script to list the majors of the Football players and calculate how many of them are in each of the majors listed. Rename the column where you calculate the majors to number_of_players.
+SELECT major, COUNT(*) number_of_players FROM football_players GROUP BY major;
+
+## Write a script to modify the above query in 5.6 to include only the Football players who are majoring in Computer Science.
+SELECT major, COUNT(*) number_of_players FROM football_players WHERE major = 'CSCI' GROUP BY major;
+
+## Write a script to create a view that counts the total number of winning games.
+CREATE VIEW Total_Wins as SELECT COUNT(*) Wins FROM football_games where home_score > visitor_score;
+SELECT * FROM Total_wins;
+
+##Write a script to create a view that counts the total number of games played.
+CREATE VIEW total_games_played as SELECT COUNT(*) Games_played FROM football_games;
+SELECT * FROM total_games_played;
+
+select (CAST((SELECT * FROM Total_wins) AS DECIMAL) / CAST((SELECT * from total_games_played) AS DECIMAL)*100);
+
+## Write a script that will count how many games "Cedric Vega" has played in during his entire football career. Don't worry about handling multiple Cedric Vegas, you can assume there is only 1 football player named Cedric Vega. This should to simplify your query.
+SELECT COUNT(*) FROM football_players INNER JOIN football_games ON football_players.id = 1 AND football_players.id = ANY(football_games.players);
+
+## Write a script that will calculate the average number of rushing yards for "Cedric Vega", based on the number of games he has played. Don't worry about handling multiple Cedric Vegas, you can assume there is only 1 football player named Cedric Vega. This should to simplify your query.
+CREATE VIEW Games_played as SELECT COUNT(*) FROM football_players INNER JOIN football_games ON football_players.id = 1 AND football_players.id = ANY(football_games.players);
+
+SELECT CAST (rushing_yards AS DECIMAL) / (SELECT * FROM Games_played) FROM football_players where id=1;
